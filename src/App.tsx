@@ -1,15 +1,20 @@
 import { useState } from 'react';
+import SuggestionList from './components/SuggestionList';
+import TodayTaskList from './components/TodayTaskList';
+import TaskForm from './components/TaskForm';
 
 type Suggestion = {
   description: string;
   mood: string;
   minTime: number;
+  completed?: boolean;
 };
 
 function App() {
   const [mood, setMood] = useState('放鬆');
   const [time, setTime] = useState(20);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [todayTasks, setTodayTasks] = useState<Suggestion[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -18,9 +23,7 @@ function App() {
     setError(null);
     fetch('/api/suggestions', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ mood, time }),
     })
       .then((res) => {
@@ -38,49 +41,35 @@ function App() {
       });
   };
 
+  // ✅ 加入任務
+  const addToTodayTasks = (task: Suggestion) => {
+    if (!todayTasks.find((t) => t.description === task.description)) {
+      setTodayTasks([...todayTasks, { ...task, completed: false }]);
+    }
+  };
+
+  // ✅ 切換完成狀態
+  const toggleComplete = (index: number) => {
+    const updated = [...todayTasks];
+    updated[index].completed = !updated[index].completed;
+    setTodayTasks(updated);
+  };
+
   return (
     <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
       <h1>🎯 TaskPlanet - 任務建議機器</h1>
-
-      <label>
-        💡 心情：
-        <select value={mood} onChange={(e) => setMood(e.target.value)}>
-          <option value="放鬆">放鬆</option>
-          <option value="靜心">靜心</option>
-          <option value="積極">積極</option>
-        </select>
-      </label>
-
-      <br /><br />
-
-      <label>
-        ⏱️ 可用時間（分鐘）：
-        <input
-          type="number"
-          value={time}
-          onChange={(e) => setTime(parseInt(e.target.value))}
-          min={1}
-        />
-      </label>
-
-      <br /><br />
-
-      <button onClick={fetchSuggestions}>🎲 給我任務建議</button>
-
-      <br /><br />
+      <TaskForm
+        mood={mood}
+        time={time}
+        onMoodChange={setMood}
+        onTimeChange={setTime}
+        onFetch={fetchSuggestions}
+      />
 
       {loading && <p>🚀 載入中...</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
-
-      {suggestions.length > 0 && (
-        <ul>
-          {suggestions.map((s, i) => (
-            <li key={i}>
-              📝 {s.description}（{s.mood} / {s.minTime} 分鐘）
-            </li>
-          ))}
-        </ul>
-      )}
+      <SuggestionList suggestions={suggestions} onAdd={addToTodayTasks} />
+      <TodayTaskList todayTasks={todayTasks} onToggle={toggleComplete} />
     </div>
   );
 }
