@@ -9,9 +9,10 @@ type Task = {
 type Props = {
   todayTasks: Task[];
   onToggle: (index: number) => void;
+  onRemove: (index: number) => void; // 新增
 };
 
-function TodayTaskList({ todayTasks, onToggle }: Props) {
+function TodayTaskList({ todayTasks, onToggle, onRemove }: Props) {
   if (todayTasks.length === 0) return null;
 
   return (
@@ -29,6 +30,9 @@ function TodayTaskList({ todayTasks, onToggle }: Props) {
             >
               {task.description}（{task.minTime} 分鐘）
             </span>
+            <button onClick={() => onRemove(i)} style={{ marginLeft: '0.5rem' }}>
+              🗑️
+            </button>
           </li>
         ))}
       </ul>
