@@ -19,6 +19,14 @@ export default function DailyQuote() {
 
   useEffect(() => {
     const todayKey = getTodayKey();
+
+    // 🧹 清除過期 quote（只保留今天的）
+    Object.keys(localStorage).forEach((key) => {
+      if (key.startsWith('daily-quote-') && key !== todayKey) {
+        localStorage.removeItem(key);
+      }
+    });
+
     const saved = localStorage.getItem(todayKey);
 
     if (saved) {

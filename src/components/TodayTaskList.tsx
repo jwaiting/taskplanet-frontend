@@ -8,8 +8,8 @@ type Task = {
 
 type Props = {
   todayTasks: Task[];
-  onToggle: (index: number) => void;
-  onRemove: (index: number) => void; // 新增
+  onToggle: (desc: string) => void;
+  onRemove: (desc: string) => void;
 };
 
 function TodayTaskList({ todayTasks, onToggle, onRemove }: Props) {
@@ -19,9 +19,11 @@ function TodayTaskList({ todayTasks, onToggle, onRemove }: Props) {
     <>
       <h2>📋 今日任務清單</h2>
       <ul>
-        {todayTasks.map((task, i) => (
-          <li key={i}>
-            <button onClick={() => onToggle(i)}>{task.completed ? '✅' : '⬜'}</button>{' '}
+        {todayTasks.map((task) => (
+          <li key={task.description}>
+            <button onClick={() => onToggle(task.description)}>
+              {task.completed ? '✅' : '⬜'}
+            </button>{' '}
             <span
               style={{
                 textDecoration: task.completed ? 'line-through' : 'none',
@@ -30,7 +32,7 @@ function TodayTaskList({ todayTasks, onToggle, onRemove }: Props) {
             >
               {task.description}（{task.minTime} 分鐘）
             </span>
-            <button onClick={() => onRemove(i)} style={{ marginLeft: '0.5rem' }}>
+            <button onClick={() => onRemove(task.description)} style={{ marginLeft: '0.5rem' }}>
               🗑️
             </button>
           </li>
