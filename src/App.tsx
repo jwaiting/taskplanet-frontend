@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import CommunitySuggestionList from './components/CommunitySuggestionList';
 import SuggestionList from './components/SuggestionList';
 import CustomSuggestionForm from './components/CustomSuggestionForm';
 import TodayTaskList from './components/TodayTaskList';
@@ -54,6 +55,7 @@ function App() {
       {noResult && <p style={{ color: 'gray' }}>😥 根據你目前的心情與時間，找不到合適的任務</p>}
 
       <SuggestionList suggestions={suggestions} onAdd={addTask} />
+      {hasFetched && <CommunitySuggestionList mood={mood} time={time} onAdd={addTask} />}
 
       {hasFetched && <CustomSuggestionForm onSubmit={handleCustomSuggestion} />}
 
