@@ -1,0 +1,12 @@
+/* minimal styles */
+.container { max-width: 920px; margin: 0 auto; padding: 16px; }
+.app-header { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.chip { border:1px solid #888; padding:6px 10px; border-radius:16px; background:#fff; cursor:pointer; }
+.chip--active { background:#eee; }
+.card { border:1px solid #ddd; border-radius:12px; padding:12px; margin-bottom:10px; }
+.actions { display:flex; gap:8px; margin-top:8px; }
+.toast { position:fixed; bottom:16px; right:16px; background:#333; color:#fff; padding:10px 12px; border-radius:8px; }
+.skeleton-line { height:12px; background:#eee; margin:8px 0; border-radius:6px; }
+.today-list { padding:0; list-style:none; }
+.btn-primary { display:inline-flex; align-items:center; justify-content:center; padding:8px 12px; border-radius:8px; border:1px solid #333; text-decoration:none; }
+input[type="number"], input[type="text"] { padding:6px 8px; border:1px solid #ccc; border-radius:8px; }
