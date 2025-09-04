@@ -47,7 +47,8 @@ export default function SuggestList({ params, showIds = false }: Props) {
             await Promise.allSettled(res.map((s) => {
               const tid = asTaskId(s);
               if (tid == null) return Promise.resolve();
-              return Api.postEventLegacy({ event: 'impression', taskId: tid, tagCodes: s.tagCodes || [] });
+              // quietly send; skip if unauthenticated, ignore errors
+              return Api.postEventQuiet({ event: 'impression', taskId: tid, tagCodes: s.tagCodes || [] });
             }));
           };
           send();
@@ -71,7 +72,7 @@ export default function SuggestList({ params, showIds = false }: Props) {
   async function onAdopt(s: Suggestion) {
     const tid = asTaskId(s);
     if (tid == null) return;
-    await Api.postEventLegacy({ event: 'adopt', taskId: tid, tagCodes: s.tagCodes || [] });
+    await Api.postEventQuiet({ event: 'adopt', taskId: tid, tagCodes: s.tagCodes || [] });
     const task: TodayTask = {
       id: tid,
       title: s.title,
@@ -88,7 +89,7 @@ export default function SuggestList({ params, showIds = false }: Props) {
   async function onSkip(s: Suggestion) {
     const tid = asTaskId(s);
     if (tid == null) return;
-    await Api.postEventLegacy({ event: 'skip', taskId: tid, tagCodes: s.tagCodes || [] });
+    await Api.postEventQuiet({ event: 'skip', taskId: tid, tagCodes: s.tagCodes || [] });
     setToast(`已略過：${s.title}`);
   }
 

@@ -3,7 +3,7 @@ import { Api } from '../../api/client';
 
 export default function StartButton({ suggestionId }: { suggestionId: string }) {
   return (
-    <button onClick={() => Api.postEvent({ action: 'adopt', suggestionId })}>
+    <button onClick={() => Api.postEventQuiet({ action: 'adopt', suggestionId })}>
       開始
     </button>
   );

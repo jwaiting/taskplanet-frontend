@@ -1,4 +1,5 @@
 import { apiFetch } from '../lib/fetcher';
+import { getAuthToken } from '../lib/auth';
 import type {
   Tag, SuggestParams, Suggestion, BufferItemInput, EventPayloadLegacy
 } from '../types';
@@ -124,6 +125,24 @@ export const Api = {
       method: 'POST',
       body: JSON.stringify(input),
     }),
+
+  // Unified events endpoint (JWT-protected on backend)
+  postEvent: (payload: Record<string, unknown>) =>
+    apiFetch<{ ok: true }>('/events', { method: 'POST', body: JSON.stringify(payload) }),
+
+  // Quiet variant: skip when unauthenticated and swallow auth/network errors.
+  postEventQuiet: async (payload: Record<string, unknown>) => {
+    try {
+      const token = getAuthToken();
+      if (!token) {
+        // No token (likely release backend without login) — skip to avoid noise
+        return { ok: true } as { ok: true };
+      }
+      return await apiFetch<{ ok: true }>('/events', { method: 'POST', body: JSON.stringify(payload) });
+    } catch (_e) {
+      return { ok: true } as { ok: true };
+    }
+  },
 
   postEventLegacy: (payload: EventPayloadLegacy) =>
     apiFetch<{ ok: true }>('/events', { method: 'POST', body: JSON.stringify(payload) }),
